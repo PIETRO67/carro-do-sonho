@@ -1,0 +1,10 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { maskPhone, validateLead } from '../src/lib/lead-validation.ts';
+const valid = { name: 'Pessoa de teste', dealership: 'Revenda de teste', phone: '(62) 99999-1234', city: 'Goiânia / GO', challenge: 'RENAVE/NF-e', consent: true, website: '' };
+test('aceita e normaliza um lead válido', () => { const result = validateLead(valid); assert.deepEqual(result.errors, {}); assert.equal(result.data?.phone, '62999991234'); });
+test('recusa lead sem um canal de contato válido', () => { assert.ok(validateLead({ ...valid, phone: '123' }).errors.phone); });
+test('exige autorização explícita e rejeita consentimento em string', () => { assert.ok(validateLead({ ...valid, consent: 'true' }).errors.consent); assert.ok(validateLead({ ...valid, consent: false }).errors.consent); });
+test('honeypot preenchido impede envio', () => { assert.equal(validateLead({ ...valid, website: 'spam' }).data, undefined); });
+test('rejeita desafio adulterado e payload inválido', () => { assert.ok(validateLead({ ...valid, challenge: 'desconhecido' }).errors.challenge); assert.ok(validateLead(null).errors.form); assert.ok(validateLead([]).errors.form); });
+test('máscara não aceita caracteres e limita o tamanho', () => { assert.equal(maskPhone('62abc999991234555'), '(62) 99999-1234'); });

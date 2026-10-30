@@ -1,0 +1,8 @@
+import Link from 'next/link';
+import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { families } from '@/lib/content';
+import { root } from '@/lib/config';
+import { pageMetadata } from '@/lib/metadata';
+import { CTA, PageIntro } from '@/components/sections';
+export const metadata = pageMetadata('Funcionalidades para a rotina da revenda', 'Conheça os 16 módulos do Carro do Sonho, organizados em gestão e pátio, comercial e CRM, financeiro e fiscal, vitrine e sistema.', '/funcionalidades');
+export default function Features() { return <><PageIntro eyebrow="16 MÓDULOS. UMA VISÃO DO NEGÓCIO." title="Tudo o que acontece na loja tem um lugar." description="Explore o sistema pelas tarefas da sua revenda. Do carro que acaba de chegar ao resultado da venda."/><div className="container features-layout"><nav className="family-nav" aria-label="Famílias de funcionalidades">{families.map((f, i) => <a href={`#${f.id}`} key={f.id}><span>0{i + 1}</span>{f.title}<ArrowRight size={15}/></a>)}<Link className="text-link" href={`${root}/demonstracao`}>Conhecer o fluxo <ArrowUpRight size={16}/></Link></nav><div>{families.map((f, i) => <section className="feature-family" id={f.id} key={f.id}><span className="eyebrow">0{i + 1} / {f.modules.length} MÓDULOS</span><h2>{f.title}</h2><p className="family-intro">{f.intro}</p><div className="module-list">{f.modules.map(([name, text], n) => <article key={name}><span className="module-number">{String(n + 1).padStart(2, '0')}</span><div><h3>{name}</h3><p>{text}</p></div></article>)}</div>{f.id === 'financeiro' && <p className="notice">As configurações tributárias devem ser validadas com o contador responsável. A disponibilidade dos serviços depende dos requisitos da sua operação.</p>}</section>)}</div></div><CTA/></>; }
